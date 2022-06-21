@@ -41,12 +41,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       //binding = ActivityMapsBinding.inflate(getLayoutInflater());
-       // setContentView(binding.getRoot());
+        //將layout新增至頁面中
         setContentView(R.layout.activity_main);
+        //取得map_relative_layout
         mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.map_relative_layout);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //同步mapFragment
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -67,30 +68,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
 
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, 39 + 20));
 
+        //取得自製infowindow的layout
         infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.custom_infowindow, null);
 
+        //取得layout中的元件
         infoTitle = (TextView)infoWindow.findViewById(R.id.nameTxt);
         infoSnippet = (TextView)infoWindow.findViewById(R.id.addressTxt);
         infoButton1 = (Button)infoWindow.findViewById(R.id.btnOne);
         infoButton2 = (Button)infoWindow.findViewById(R.id.btnTwo);
 
+        //新增Button1的事件
         infoButtonListener = new OnInfoWindowElemTouchListener(infoButton1){
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
+                //todo
                 Toast.makeText(MapsActivity.this, "click on button 1", Toast.LENGTH_SHORT).show();
             }
 
         };
+        //將事件加入
         infoButton1.setOnTouchListener(infoButtonListener);
 
-        
+
+        //設定googlemap中的WindowsAdapter所取得的文字對應
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -112,20 +116,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // Let's add a couple of markers
-        googleMap.addMarker(new MarkerOptions()
+        //新增標記1
+        mMap.addMarker(new MarkerOptions()
                 .position(latlng1)
                 .title("Source")
                 .snippet("Comapny Name")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-
-        googleMap.addMarker(new MarkerOptions()
+        //新增標記2
+        mMap.addMarker(new MarkerOptions()
                 .position(latlng2)
                 .title("Destination")
                 .snippet("AmisunXXXXXX")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
         //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng1, 10));
+        //移動相機
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng1, 10));
 
     }
     public static int getPixelsFromDp(Context context, float dp) {
